@@ -1,0 +1,66 @@
+#1 Класс вектор
+class Vector:
+    def __init__(self, x, y, z):
+        self.x, self.y, self.z = x, y, z
+
+    def __abs__(self):
+        return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** 0.5
+
+    def __add__(self, other):
+        return Vector(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    def __sub__(self, other):
+        return Vector(self.x - other.x, self.y - other.y, self.z - other.z)
+
+    def __mul__(self, other):
+        if isinstance(other, Vector):
+            return self.x * other.x + self.y * other.y + self.z * other.z
+        return Vector(self.x * other, self.y * other, self.z * other)
+
+    def __rmul__(self, other):
+        return self * other
+
+    def __str__(self):
+        return f"({self.x}, {self.y}, {self.z})"
+
+def Vector_from_string(s):
+    s = s.strip('{} ')
+    x, y, z = map(float, s.split(','))
+    return Vector(x, y, z)
+
+v1 = Vector_from_string("{1, 2, 3}")
+v2 = Vector(4, 5, 6)
+print(v1 + v2)
+print(v1 * v2)
+print(abs(v1))
+
+#1.1 Центр масс
+def center_of_mass(points):
+    n = len(points)
+    avg_x = sum(p.x for p in points) / n
+    avg_y = sum(p.y for p in points) / n
+    avg_z = sum(p.z for p in points) / n
+    return Vector(avg_x, avg_y, avg_z)
+
+points = [Vector(1, 2, 3), Vector(4, 5, 6), Vector(7, 8, 9)]
+print(center_of_mass(points))
+
+#1.2 Площадь
+def triangle_area(a, b, c):
+    ab = b - a
+    ac = c - a
+    cross = Vector(ab.y*ac.z - ab.z*ac.y,ab.z*ac.x - ab.x*ac.z,ab.x*ac.y - ab.y*ac.x)
+    return 0.5 * abs(cross)
+
+def max_for3_area(points):
+    max_area = 0
+    for i in range(len(points)):
+        for j in range(i+1, len(points)):
+            for k in range(j+1, len(points)):
+                area = triangle_area(points[i], points[j], points[k])
+                if area > max_area:
+                    max_area = area
+    return max_area
+
+points = [Vector(0,0,0), Vector(1,0,0), Vector(0,1,0), Vector(0,0,1)]
+print(max_for3_area(points))
